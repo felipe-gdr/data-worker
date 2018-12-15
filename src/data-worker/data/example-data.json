@@ -1,0 +1,44 @@
+[
+  {
+    "artist": "Pink Floyd",
+    "albums": [
+      {
+        "title": "The Piper at the Gates of Dawn",
+        "releaseYear": "1967"
+      },
+      {
+        "title": "A Saucerful of Secrets",
+        "releaseYear": "1968"
+      },
+      {
+        "title": "More",
+        "releaseYear": "1969"
+      },
+      {
+        "title": "Ummagumma",
+        "releaseYear": "1969"
+      }
+    ]
+  },
+  {
+    "artist": "Led Zeppelin",
+    "albums": [
+      {
+        "title": "Led Zeppelin",
+        "releaseYear": "1969"
+      },
+      {
+        "title": "Led Zeppelin II",
+        "releaseYear": "1969"
+      },
+      {
+        "title": "Led Zeppelin III",
+        "releaseYear": "1970"
+      },
+      {
+        "title": "Led Zeppelin IV",
+        "releaseYear": "1971"
+      }
+    ]
+  }
+]
