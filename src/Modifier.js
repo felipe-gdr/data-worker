@@ -1,39 +1,28 @@
 import React, { Component } from 'react';
-import dataWorker from './data-worker';
-import { catchError } from 'rxjs/operators';
 
-const query = `
-    subscription {
-        somethingChanged {
-            id
-        }
-    }
-`;
+import { changeSomething } from './data-worker/repository';
 
 export default class Consumer extends Component {
-    state = { data: '' }
+    state = { text: '' }
 
-    constructor(props) {
-        super(props);
-        this.dataWorker = dataWorker();
+    handleChangeText = ({ target }) => {
+        this.setState({ text: target.value });
     }
 
-    getData = () => {
-        this.dataWorker.subscribe({ query })
-            .pipe(catchError(console.error))
-            .subscribe((data) => {
-                this.setState({ data: JSON.stringify(data) });
-            });
+    changeData = () => {
+        changeSomething(this.state.text);
     }
 
     render() {
-        const { data } = this.state;
+        const { text } = this.state;
 
         return <div>
-            <button onClick={this.getData}>get data</button>
-            <pre>
-                {data}
-            </pre>
+            <input 
+                value={text} 
+                onChange={this.handleChangeText} 
+                placeholder="Change text" 
+            />
+            <button onClick={this.changeData}>change data</button>
         </div>
     }
 }

@@ -23,13 +23,16 @@ const _subscribe = ({ query }) => {
         .pipe(
             mergeMap(asyncIterator => {
                 return Observable.create(observer => {
-                    forAwaitEach(asyncIterator, ({ errors, data }) => {
+                    forAwaitEach(asyncIterator, item => {
+                        const { errors, data }  = item;
                         if (errors) {
                             // TODO: errors is always undefined, even when the query has syntax errors
                             return observer.throw(errors);
                         }
                         observer.next(data);
                     })
+
+                    return () => asyncIterator.return();
                 })
             })
         );

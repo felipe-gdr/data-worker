@@ -1,18 +1,11 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
-import { PubSub } from 'graphql-subscriptions';
 
-export const pubsub = new PubSub();
-
-const SOMETHING_CHANGED_TOPIC = 'something_changed';
-
-setInterval(() => {
-    pubsub.publish(SOMETHING_CHANGED_TOPIC, {  id: "123" + new Date() });
-}, 1000);
+import { getSomething, subscribeToSomething } from './repository';
 
 const ResultType = new GraphQLObjectType({
     name: 'Result',
     fields: {
-        id: { 
+        id: {
             type: GraphQLString,
         },
     },
@@ -23,7 +16,7 @@ const QueryType = new GraphQLObjectType({
     fields: {
         somethingChanged: {
             type: ResultType,
-            resolve: () => ({ id: 'static' }) 
+            resolve: () => getSomething()
         },
     },
 });
@@ -34,9 +27,7 @@ const SubscriptionType = new GraphQLObjectType({
         somethingChanged: {
             type: ResultType,
             resolve: value => value,
-            subscribe: () => {
-                return pubsub.asyncIterator(SOMETHING_CHANGED_TOPIC)
-            },
+            subscribe: () => subscribeToSomething() 
         },
     },
 });

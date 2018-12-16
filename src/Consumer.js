@@ -16,21 +16,22 @@ export default class Consumer extends Component {
     constructor(props) {
         super(props);
         this.dataWorker = dataWorker();
-    }
 
-    getData = () => {
-        this.dataWorker.subscribe({ query })
+        this.subscription = this.dataWorker.subscribe({ query })
             .pipe(catchError(console.error))
             .subscribe((data) => {
                 this.setState({ data: JSON.stringify(data) });
             });
     }
 
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
+    }
+
     render() {
         const { data } = this.state;
 
         return <div>
-            <button onClick={this.getData}>get data</button>
             <pre>
                 {data}
             </pre>
