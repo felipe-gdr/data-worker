@@ -18,7 +18,7 @@ const get = ({ query }) => {
         );
 }
 
-const _subscribe = ({ query }) => {
+const live = ({ query }) => {
     return from(subscribe(schema, parse(query)))
         .pipe(
             mergeMap(asyncIterator => {
@@ -41,6 +41,6 @@ const _subscribe = ({ query }) => {
 export default () => {
     return {
         get,
-        subscribe: _subscribe
+        live,
     };
 }

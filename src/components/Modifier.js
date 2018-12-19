@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { changeSomething } from './data-worker/repository';
+import { changeSomething } from '../data-worker/repository';
 
 export default class Consumer extends Component {
     state = { text: '' }

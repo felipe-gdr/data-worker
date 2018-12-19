@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import dataWorker from './data-worker';
+import dataWorker from '../data-worker';
 import { catchError } from 'rxjs/operators';
 
 const query = `
@@ -17,7 +17,7 @@ export default class Consumer extends Component {
         super(props);
         this.dataWorker = dataWorker();
 
-        this.subscription = this.dataWorker.subscribe({ query })
+        this.subscription = this.dataWorker.live({ query })
             .pipe(catchError(console.error))
             .subscribe((data) => {
                 this.setState({ data: JSON.stringify(data) });
