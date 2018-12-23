@@ -5,6 +5,6 @@ import resolvers from './resolvers';
 import typeDefs from './schema-definition';
 
 export default makeExecutableSchema({
-    typeDefs,
-    resolvers,
+  typeDefs,
+  resolvers,
 });

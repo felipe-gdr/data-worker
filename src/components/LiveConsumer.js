@@ -14,27 +14,27 @@ export default class Consumer extends Component {
     state = { data: '' }
 
     constructor(props) {
-        super(props);
-        this.dataWorker = dataWorker();
+      super(props);
+      this.dataWorker = dataWorker();
 
-        this.subscription = this.dataWorker.live({ query })
-            .pipe(catchError(console.error))
-            .subscribe((data) => {
-                this.setState({ data: JSON.stringify(data) });
-            });
+      this.subscription = this.dataWorker.live({ query })
+        .pipe(catchError(console.error))
+        .subscribe((data) => {
+          this.setState({ data: JSON.stringify(data) });
+        });
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
+      this.subscription.unsubscribe();
     }
 
     render() {
-        const { data } = this.state;
+      const { data } = this.state;
 
-        return <div>
-            <pre>
-                {data}
-            </pre>
-        </div>
+      return <div>
+        <pre>
+          {data}
+        </pre>
+      </div>
     }
 }
