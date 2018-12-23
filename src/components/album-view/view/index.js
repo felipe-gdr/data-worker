@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import View from './view';
 
-import { fetchAlbumRequest } from '../actions';
+import { fetchAlbumRequest, addReviewRequest } from '../actions';
 
 export default connect(
   state => ({
@@ -11,5 +11,6 @@ export default connect(
   }),
   {
     fetchAlbumRequest,
+    addReviewRequest,
   }
 )(View);

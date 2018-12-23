@@ -16,6 +16,14 @@ const reducer = (state = initialState,  action) => {
     return {...state, albumId: action.payload.albumId}
   case 'FETCH_ALBUM_SUCCESS':
     return {...state, albumDetails: action.payload}
+  case 'ADD_REVIEW_SUCCESS':
+    return {
+      ...state, 
+      albumDetails: {
+        ...state.albumDetails,
+        reviews: [...state.albumDetails.reviews, action.payload],
+      } 
+    }
   default:
     return state;
   }

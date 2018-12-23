@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import AddReview from './add-review';
+import Highlight from '../../common/highlight';
+
 export default class AlbumView extends Component {
   componentDidUpdate(prevProps) {
     if(this.props.albumId !== prevProps.albumId) {
@@ -8,7 +11,7 @@ export default class AlbumView extends Component {
   }
 
   render() {
-    const { albumDetails } = this.props;
+    const { albumDetails, addReviewRequest } = this.props;
 
     if(!albumDetails) {
       return (
@@ -16,18 +19,19 @@ export default class AlbumView extends Component {
       )
     }
 
-    const { title, artist, coverUrl, comments } = albumDetails;
+    const { title, artist, coverUrl, reviews } = albumDetails;
 
     return (
       <div>
         <h1>{title}</h1>
         <h4>by {artist}</h4>
         <img src={coverUrl} alt="Album cover"/>
-        <ul>
-          {comments && comments.map((comment, idx) => (
-            <li key={idx}>{comment.title}</li> 
+        <div>
+          {reviews && reviews.map((review) => (
+            <Highlight key={review.id}>{review.title}</Highlight> 
           ))}
-        </ul>
+        </div>
+        <AddReview addReviewRequest={addReviewRequest} />
       </div>
     )
   }
