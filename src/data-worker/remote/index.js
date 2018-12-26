@@ -12,6 +12,11 @@ const config = {
 
 const database = firebase.initializeApp(config).database();
 
+const toArray = entries => Object.keys(entries).map(id => ({
+  id,
+  ...entries[id],
+}));
+
 const get = path => database
   .ref(path)
   .once('value')
@@ -19,7 +24,7 @@ const get = path => database
 
 const transformAlbum = album => ({
   ...album,
-  reviews: transformReviews(album.reviews), 
+  reviews: album.reviews ? transformReviews(album.reviews) : [], 
 });
 
 const transformReviews = reviews => Object.keys(reviews)
@@ -30,8 +35,7 @@ const transformReviews = reviews => Object.keys(reviews)
 
 export const getAllAlbums = async () => {
   const albums = await get('albums')
-    
-  return albums.filter(Boolean).map(transformAlbum);
+  return toArray(albums).filter(Boolean).map(transformAlbum);
 }
 
 export const getAlbum = async (id) => {
@@ -43,6 +47,15 @@ export const getAlbum = async (id) => {
 export const addReview = ({ albumId, title, rating }) => database
   .ref(`albums/${albumId}/reviews`)
   .push({ title, rating })
+  .then(ref => ref.once('value'))
+  .then(dataSnapshot => ({
+    id: dataSnapshot.key,
+    ...dataSnapshot.val()
+  }));
+
+export const addAlbum = ({ title, artist, coverUrl}) => database
+  .ref('albums/')
+  .push({ title, artist, coverUrl })
   .then(ref => ref.once('value'))
   .then(dataSnapshot => ({
     id: dataSnapshot.key,

@@ -7,6 +7,8 @@ export default connect(
   state => ({
     isLoading: state.isLoading 
   }),
-  addAlbumRequest,
+  {
+    addAlbumRequest,
+  }
 )(View);
 

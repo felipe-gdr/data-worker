@@ -1,4 +1,9 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import { createEpicMiddleware } from 'redux-observable'; 
+
+import epics from './epics';
+
+const epicMiddleware = createEpicMiddleware();
 
 const initialState = {
   isLoading: false,
@@ -16,6 +21,11 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export default createStore(
+const store = createStore(
   reducer, 
+  applyMiddleware(epicMiddleware),
 );
+
+epicMiddleware.run(epics);
+
+export default store;

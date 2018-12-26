@@ -20,11 +20,28 @@ const Container = styled.div`
 `
 
 export default class AddAlbum extends Component {
+  state = {
+    title: '',
+    artist: '',
+    coverUrl: '',
+  }
 
   handleClickAdd = () => {
     const { addAlbumRequest } = this.props;
 
-    addAlbumRequest({});
+    addAlbumRequest(this.state);
+  }
+
+  handleChangeTitle = e => {
+    this.setState({ title: e.target.value});
+  }
+
+  handleChangeArtist = e => {
+    this.setState({ artist: e.target.value});
+  }
+
+  handleChangeCoverUrl = e => {
+    this.setState({ coverUrl: e.target.value});
   }
 
   render() {
@@ -34,15 +51,15 @@ export default class AddAlbum extends Component {
 
         <fieldset>
           <label htmlFor="title">Title</label>
-          <input id="title" />
+          <input id="title" onChange={this.handleChangeTitle} />
         </fieldset>
         <fieldset>
           <label htmlFor="artist">Artist</label>
-          <input id="artist" />
+          <input id="artist" onChange={this.handleChangeArtist} />
         </fieldset>
         <fieldset>
-          <label htmlFor="coverImage">Cover Image</label>
-          <input id="coverImage" placeholder="URL" />
+          <label htmlFor="coverUrl">Cover Image</label>
+          <input id="coverUrl" placeholder="URL" onChange={this.handleChangeCoverUrl} />
         </fieldset>
         <button type="submit" onClick={this.handleClickAdd}>Add</button>
       </Container>
