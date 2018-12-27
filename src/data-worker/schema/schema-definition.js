@@ -1,31 +1,37 @@
 export default `
   type Query {
-    # artists(searchQuery: String): [Artist]
-    # albums(artistName: String): [Album]
     somethingChanged: Result
+    albums(artistName: String): [Album]
+    reviews(albumId: ID!): [Review]
+    album(albumId: ID!): [Album]
   }
 
   type Subscription {
-      somethingChanged: Result
+    somethingChanged: Result
+    albums(artistName: String): [Album]
   }
 
   type Result {
-      id: String
+    id: String
   }
 
-  type Artist {
-      name: String
-      albums: [Album]
+  type Review {
+    id: ID!
+    title: String!
+    rating: Int!
   }
 
   type Album {
-      title: String
-      artist: Artist
-      releaseYear: Int
+    title: String!
+    artist: String!
+    coverUrl: String!
+    releaseYear: Int
+    reviews: [Review]
+    reviewCount: Int!
   }
 
   schema {
-      query: Query
-      subscription: Subscription
+    query: Query
+    subscription: Subscription
   }
 `;

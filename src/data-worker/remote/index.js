@@ -22,30 +22,26 @@ const get = path => database
   .once('value')
   .then(dataSnapshot => dataSnapshot.val());
 
-const transformAlbum = album => ({
-  ...album,
-  reviews: album.reviews ? transformReviews(album.reviews) : [], 
-});
-
-const transformReviews = reviews => Object.keys(reviews)
-  .map(id => ({
-    id,
-    ...reviews[id],
-  }));
-
 export const getAllAlbums = async () => {
   const albums = await get('albums')
-  return toArray(albums).filter(Boolean).map(transformAlbum);
+  return toArray(albums).filter(Boolean);
 }
 
 export const getAlbum = async (id) => {
   const album = await get(`albums/${id}`);
 
-  return transformAlbum(album);
+  return album;
+}
+
+export const getReviews = async (albumId) => {
+  const reviews = await get(`reviews/${albumId}`);
+  const reviewsArr = toArray(reviews);
+
+  return reviewsArr;
 }
 
 export const addReview = ({ albumId, title, rating }) => database
-  .ref(`albums/${albumId}/reviews`)
+  .ref(`reviews/${albumId}`)
   .push({ title, rating })
   .then(ref => ref.once('value'))
   .then(dataSnapshot => ({
