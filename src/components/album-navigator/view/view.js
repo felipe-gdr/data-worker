@@ -24,6 +24,16 @@ export default class AlbumNavigator extends Component {
     props.fetchAlbumsRequest();
   }
 
+  toggleFavorite = album  => {
+    const { markAsFavorite, unmarkAsFavorite } = this.props;
+
+    if(album.isFavorite) {
+      unmarkAsFavorite({ albumId: album.id });
+    } else {
+      markAsFavorite({ albumId: album.id });
+    }
+  }
+
   render() {
     const { albums, selectedAlbum, selectAlbum } = this.props;
 
@@ -31,7 +41,10 @@ export default class AlbumNavigator extends Component {
       <Container>
         <List>
           {albums.map(album => (
-            <AlbumCard key={album.id} {...album} onClick={selectAlbum} />
+            <div key={album.id}>
+              <AlbumCard {...album} onClick={selectAlbum} />
+              <button onClick={() => this.toggleFavorite(album)}>favorite {album.isFavorite ? '*' : ''}</button>
+            </div>
           ))}
         </List>
         <AlbumView albumId={selectedAlbum}/>

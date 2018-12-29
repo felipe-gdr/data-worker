@@ -20,6 +20,17 @@ const reducer = (state = initialState,  action) => {
   }
   case 'FETCH_ALBUMS_SUCCESS': 
     return {...state, albums: action.payload}
+  case 'TOGGLE_FAVORITE_SUCCESS':  {
+    const { albumId, isFavorite } = action.payload;
+
+    const updatedAlbums = [...state.albums];
+
+    const album = updatedAlbums.find(a => a.id === albumId);
+
+    album.isFavorite = isFavorite;
+
+    return {...state, albums: updatedAlbums}
+  }
   default:
     return state;
   }

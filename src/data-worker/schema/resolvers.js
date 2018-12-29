@@ -2,10 +2,11 @@ import {
   subscribeToAlbums, 
   subscribeToAlbum, 
   addAlbum,  
-  editAlbum,  
   addReview, 
-  getReviewCount,
   getReviews,
+  getFavorites,
+  markAsFavorite,
+  unmarkAsFavorite,
 } from '../albums-resolver';
 
 import * as remote from '../remote';
@@ -26,14 +27,17 @@ export default {
     },
   },
   Mutation: {
-    editAlbum: (parent, args) => {
-      return editAlbum({ id: args.id, title: args.title, artist: args.artist });
-    },
     addReview: (parent, args) => {
       return addReview({ albumId: args.albumId, title: args.title, rating: args.rating });
     },
     addAlbum: (parent, args) => {
       return addAlbum({ title: args.title, artist: args.artist, coverUrl: args.coverUrl });
+    },
+    markAsFavorite: (parent, args) => {
+      return markAsFavorite(args.albumId);
+    },
+    unmarkAsFavorite: (parent, args) => {
+      return unmarkAsFavorite(args.albumId);
     }
   },
   Album: {
@@ -44,6 +48,14 @@ export default {
 
       return getReviews(album.id);
     },
-    reviewCount: getReviewCount 
+    isFavorite: async album => {
+      if(album.isFavorite !== undefined) {
+        return album.isFavorite;
+      }
+
+      const favorites = await getFavorites();
+
+      return favorites && favorites.includes(album.id);
+    }
   }
 };

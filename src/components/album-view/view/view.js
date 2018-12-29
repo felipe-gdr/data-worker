@@ -37,7 +37,7 @@ export default class AlbumView extends Component {
       )
     }
 
-    const { title, artist, coverUrl, reviews } = albumDetails;
+    const { title, artist, coverUrl, reviews, isFavorite } = albumDetails;
 
     return (
       <Container>
@@ -52,6 +52,7 @@ export default class AlbumView extends Component {
           ))}
         </Reviews>
         <AddReview addReviewRequest={addReviewRequest} />
+        {isFavorite ? '*' : ''}
       </Container>
     )
   }

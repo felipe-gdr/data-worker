@@ -13,9 +13,10 @@ export default `
   }
 
   type Mutation {
-    editAlbum(id: ID!, title: String, artist: String): Album
     addReview(albumId: ID!, title: String!, rating: Int!): Review
     addAlbum(title: String!, artist: String!, coverUrl: String!): Album
+    markAsFavorite(albumId: ID!): Boolean
+    unmarkAsFavorite(albumId: ID!): Boolean
   }
 
   type Result {
@@ -35,7 +36,7 @@ export default `
     coverUrl: String!
     releaseYear: Int
     reviews: [Review]
-    reviewCount: Int!
+    isFavorite: Boolean
   }
 
   schema {

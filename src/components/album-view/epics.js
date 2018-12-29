@@ -1,5 +1,5 @@
 import { ofType, combineEpics } from 'redux-observable';
-import { mergeMap, map } from 'rxjs/operators';
+import { mergeMap, map, takeUntil } from 'rxjs/operators';
 
 import { fetchAlbumSuccess, addReviewSuccess } from './actions';
 
@@ -17,6 +17,7 @@ const fetchAlbumEpic = (action$, state$)=> action$.pipe(
             title
             artist
             coverUrl
+            isFavorite
             reviews {
               id
               title
@@ -29,7 +30,8 @@ const fetchAlbumEpic = (action$, state$)=> action$.pipe(
       .pipe(
         map(data => {
           return fetchAlbumSuccess(data.album);
-        })
+        }),
+        takeUntil(action$.pipe(ofType('REFRESH_APP_PROPS')))
       )
   })
 );

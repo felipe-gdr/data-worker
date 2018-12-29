@@ -9,7 +9,9 @@ import View from './view';
 export default class AlbumView extends Component {
 
   componentDidUpdate(prevProps) {
-    store.dispatch(refreshAppProps(this.props));
+    if(prevProps.albumId !== this.props.albumId) {
+      store.dispatch(refreshAppProps(this.props));
+    }
   }
 
 

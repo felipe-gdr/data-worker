@@ -5,11 +5,13 @@ import * as remote from './remote';
 const ADD_ALBUM_TOPIC = 'topic:albums:add';
 const ADD_REVIEW_TOPIC = 'topic:albums:add-review';
 const GET_REVIEWS_TOPIC = 'topic:albums:get-reviews';
+const TOGGLE_FAVORITE_TOPIC = 'topic:albums:toggle-favorite';
 
 const eventEmitter = new EventEmitter();
 
 const cache = {
   albums: [],
+  favorites: [],
 };
 
 export const addAlbum = async (album) => {
@@ -20,7 +22,25 @@ export const addAlbum = async (album) => {
   return result;
 }
 
-export const getReviewCount = () => {};
+export const getFavorites = async () => {
+  const favorites = await remote.getFavorites();
+
+  cache.favorites = favorites;
+
+  return favorites;
+}
+
+export const markAsFavorite = async albumId => {
+  await remote.markAsFavorite({ albumId });
+
+  eventEmitter.emit(TOGGLE_FAVORITE_TOPIC, { albumId, isFavorite: true });
+};
+
+export const unmarkAsFavorite = async albumId => {
+  await remote.unmarkAsFavorite({ albumId });
+
+  eventEmitter.emit(TOGGLE_FAVORITE_TOPIC, { albumId, isFavorite: false });
+};
 
 export const addReview = async review => {
   const result = await remote.addReview(review);
@@ -165,6 +185,17 @@ export const subscribeToAlbum = async albumId => {
     });
   }
 
+  const toggleFavoriteHandler = async ({ albumId: albumIdToggled, isFavorite }) => {
+    if(albumId === albumIdToggled) {
+      const album = cache.albums.find(a => a.id === albumId);
+
+      album.isFavorite = isFavorite;
+      
+      pushValue(album);
+    }
+  }
+
+  eventEmitter.addListener(TOGGLE_FAVORITE_TOPIC, toggleFavoriteHandler);
 
   return {
     [Symbol.asyncIterator]() {
@@ -172,6 +203,7 @@ export const subscribeToAlbum = async albumId => {
     },
     next: () => pullValue(),
     return: () => {
+      eventEmitter.removeListener(TOGGLE_FAVORITE_TOPIC, toggleFavoriteHandler);
       done = true;
       return Promise.resolve({ done });
     },

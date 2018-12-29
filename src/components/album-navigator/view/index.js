@@ -1,7 +1,12 @@
 import { connect } from 'react-redux';
 
 import View from './view';
-import { selectAlbum, fetchAlbumsRequest } from '../actions';
+import { 
+  selectAlbum, 
+  fetchAlbumsRequest, 
+  markAsFavorite, 
+  unmarkAsFavorite 
+} from '../actions';
 
 export default connect(
   state => ({
@@ -11,6 +16,8 @@ export default connect(
   {
     selectAlbum,
     fetchAlbumsRequest,
+    markAsFavorite,
+    unmarkAsFavorite,
   }
 )(View);
 

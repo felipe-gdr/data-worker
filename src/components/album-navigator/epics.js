@@ -1,9 +1,9 @@
 import { ofType, combineEpics } from 'redux-observable';
 import { mergeMap, map } from 'rxjs/operators';
 
-import { fetchAlbumsSuccess } from './actions';
+import { fetchAlbumsSuccess, toggleFavoriteSuccess } from './actions';
 
-import { live } from '../../data-worker';
+import { live, mutation } from '../../data-worker';
 
 const query = `
   subscription {
@@ -11,6 +11,7 @@ const query = `
       id
       title
       artist
+      isFavorite
       reviews {
         id
         rating
@@ -28,6 +29,38 @@ const fetchAlbumsEpic = action$ => action$.pipe(
   )
 );
 
+const markAsFavoriteEpic = action$ => action$.pipe(
+  ofType('MARK_AS_FAVORITE'),
+  mergeMap(action => mutation({ 
+    query: `
+      mutation {
+        markAsFavorite(albumId: "${action.payload.albumId}")
+      }
+    `
+  })
+    .pipe(
+      map(() => toggleFavoriteSuccess({ albumId: action.payload.albumId, isFavorite: true })),
+    )
+  )
+);
+
+const unmarkAsFavoriteEpic = action$ => action$.pipe(
+  ofType('UNMARK_AS_FAVORITE'),
+  mergeMap(action => mutation({ 
+    query: `
+      mutation {
+        unmarkAsFavorite(albumId: "${action.payload.albumId}")
+      }
+    `
+  })
+    .pipe(
+      map(() => toggleFavoriteSuccess({ albumId: action.payload.albumId, isFavorite: false })),
+    )
+  )
+);
+
 export default combineEpics(
   fetchAlbumsEpic,
+  markAsFavoriteEpic,
+  unmarkAsFavoriteEpic,
 );

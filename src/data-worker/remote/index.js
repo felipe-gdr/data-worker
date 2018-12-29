@@ -52,6 +52,8 @@ export const getReviews = async (albumId) => {
   return reviewsArr;
 }
 
+export const getFavorites = () => get('favorites');
+
 export const addReview = ({ albumId, title, rating }) => database
   .ref(`reviews/${albumId}`)
   .push({ title, rating })
@@ -70,3 +72,24 @@ export const addAlbum = ({ title, artist, coverUrl}) => database
     id: dataSnapshot.key,
     ...dataSnapshot.val()
   }))
+
+export const markAsFavorite = async ({ albumId }) => {
+  const favorites = await getFavorites() || [];
+
+  favorites.push(albumId);
+
+  return database.ref('favorites')
+    .set(favorites)
+    .then(() => favorites);
+}
+  
+export const unmarkAsFavorite = async ({ albumId }) => {
+  const favorites = await getFavorites() || [];
+
+  const updated = favorites.filter(id => id !== albumId);
+
+  return database.ref('favorites')
+    .set(updated)
+    .then(() => favorites);
+}
+  
