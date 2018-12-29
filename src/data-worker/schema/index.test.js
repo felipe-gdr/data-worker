@@ -4,7 +4,41 @@ import schema from './index';
 
 describe('schema', () => {
 
-  describe('subscribe returns asyncIterators', () => {
+  describe('ubscribe returns asyncIterators', () => {
+    test('edit an album', async () => {
+      const query = 'subscription { albums { id, title, artist } }';
+
+      const first = { 
+        id: '-LUi8G6ZlrsYiwxenbb4',
+        title: 'Led Zeppelin',
+        artist: 'Led Zeppelin'
+      };
+
+      const edited = { 
+        id: '-LUi8G6ZlrsYiwxenbb4',
+        title: 'Led Zeppelin!!!',
+        artist: 'Led Zeppelin'
+      };
+
+      const asyncIterator = await subscribe(schema, parse(query));
+
+      const { value: { error, data } } = await asyncIterator.next();
+
+      expect(error).toBeUndefined();
+      expect(data.albums).toEqual(expect.arrayContaining([first])); 
+
+      const mutation = 'mutation { editAlbum(id:"-LUi8G6ZlrsYiwxenbb4", title: "Led Zeppelin!!!", artist: "Led Zeppelin") { title } }';
+
+      const result = await graphql(schema, mutation);
+      expect(result.data.editAlbum).toEqual({ title: 'Led Zeppelin!!!' });
+
+      const { value } = await asyncIterator.next();
+
+      expect(value.data.albums).toEqual(expect.arrayContaining([edited])); 
+
+      asyncIterator.return();
+    });
+    
     test('albums with titles', async () => {
       const query = 'subscription { albums { title } }';
 

@@ -8,6 +8,6 @@ export default ({ reviews }) => (
       range(meanBy(reviews, review => review.rating))
         .map((_, idx) => <span key={idx} role="img" aria-label="star">*</span>)
     }
-    <span> ({reviews && reviews.length})</span>
+    <span>({reviews && reviews.length})</span>
   </div>
 )

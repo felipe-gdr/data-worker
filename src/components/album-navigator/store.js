@@ -19,7 +19,7 @@ const reducer = (state = initialState,  action) => {
     return state;
   }
   case 'FETCH_ALBUMS_SUCCESS': 
-    return {...state, albums: action.payload, selectedAlbum: null}
+    return {...state, albums: action.payload}
   default:
     return state;
   }

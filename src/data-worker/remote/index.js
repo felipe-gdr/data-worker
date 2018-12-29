@@ -30,12 +30,24 @@ export const getAllAlbums = async () => {
 export const getAlbum = async (id) => {
   const album = await get(`albums/${id}`);
 
-  return album;
+  return { ...album, id };
+}
+
+export const editAlbum = async (album) => {
+  const albumCurrent = await getAlbum(album.id);
+
+  const editedAlbum = {...albumCurrent, ...album};
+
+  return database.ref(`albums/${album.id}`)
+    .set(editedAlbum)
+    .then(ref => ref.once('value'))
+    .then(dataSnapshot => dataSnapshot.val());
 }
 
 export const getReviews = async (albumId) => {
   const reviews = await get(`reviews/${albumId}`);
-  const reviewsArr = toArray(reviews);
+  const reviewsArr = toArray(reviews || [])
+    .map(review => ({ ...review, albumId }));
 
   return reviewsArr;
 }
@@ -45,6 +57,7 @@ export const addReview = ({ albumId, title, rating }) => database
   .push({ title, rating })
   .then(ref => ref.once('value'))
   .then(dataSnapshot => ({
+    albumId,
     id: dataSnapshot.key,
     ...dataSnapshot.val()
   }));

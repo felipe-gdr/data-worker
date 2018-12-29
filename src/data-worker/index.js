@@ -5,12 +5,12 @@ import { forAwaitEach } from 'iterall';
 
 import schema from './schema';
 
-const get = ({ query }) => {
+export const get = ({ query }) => {
   return from(graphql(schema, query))
     .pipe(
       mergeMap(({ errors, data }) => {
         if (errors) {
-          return throwError(errors);
+          return throwError(errors[0]);
         }
 
         return of(data);
@@ -18,7 +18,7 @@ const get = ({ query }) => {
     );
 }
 
-const live = ({ query }) => {
+export const live = ({ query }) => {
   return from(subscribe(schema, parse(query)))
     .pipe(
       mergeMap(asyncIterator => {
@@ -26,8 +26,7 @@ const live = ({ query }) => {
           forAwaitEach(asyncIterator, item => {
             const { errors, data }  = item;
             if (errors) {
-              // TODO: errors is always undefined, even when the query has syntax errors
-              return observer.throw(errors);
+              return observer.error(errors[0]);
             }
             observer.next(data);
           })
@@ -38,9 +37,15 @@ const live = ({ query }) => {
     );
 };
 
-export default () => {
-  return {
-    get,
-    live,
-  };
+export const mutation = ({ query }) => {
+  return from(graphql(schema, query))
+    .pipe(
+      mergeMap(({ errors, data }) => {
+        if (errors) {
+          return throwError(errors[0]);
+        }
+
+        return of(data);
+      })
+    );
 }
