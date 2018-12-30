@@ -78,13 +78,14 @@ export const subscribeToAlbums = async () => {
   // Send cached albums
   pushQueue.push(cache.albums);
 
-  // Send remote albums 
-  const albums = await remote.getAllAlbums(); 
-    
-  pushQueue.push(albums);
-
-  // Update cache
-  cache.albums = albums;
+  remote.getAllAlbums()
+    .then(albums => {
+      // Send remote albums 
+      pushValue(albums);
+      // Update cache
+      cache.albums = albums;
+    });
+     
 
   const pullValue = () => {
     return new Promise(resolve => {
@@ -99,24 +100,24 @@ export const subscribeToAlbums = async () => {
   }
 
   const addAlbumHandler = async album => {
-    albums.push(album); 
-    pushValue(albums);
+    cache.albums.push(album); 
+    pushValue(cache.albums);
   }
 
   const addReviewHandler = async review => {
-    const album = albums.find(a => a.id === review.albumId);
+    const album = cache.albums.find(a => a.id === review.albumId);
 
     album.reviews.push(review);
     
-    pushValue(albums);
+    pushValue(cache.albums);
   }
 
   const getReviewsHandler = async ({ albumId, reviews }) => {
-    const album = albums.find(a => a.id === albumId);
+    const album = cache.albums.find(a => a.id === albumId);
 
     album.reviews = reviews;
     
-    pushValue(albums);
+    pushValue(cache.albums);
   }
 
   eventEmitter.addListener(ADD_ALBUM_TOPIC, addAlbumHandler);
@@ -165,13 +166,14 @@ export const subscribeToAlbum = async albumId => {
   // Send cached album
   pushQueue.push(cache.albums.find(a => a.id === albumId));
 
-  // Send remote album
-  const album = await remote.getAlbum(albumId); 
+  remote.getAlbum(albumId)
+    .then(album => {
+      // Send remote album
+      pushQueue.push(album);
+      // Update cache
+      cache.albums[albumId] = album;
+    }); 
     
-  pushQueue.push(album);
-
-  // Update cache
-  cache.albums[albumId] = album;
 
   const pullValue = () => {
     return new Promise(resolve => {
